@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
-import Map, { MapOptions } from "ol/Map";
+import Map from "ol/Map";
 import { View } from "ol";
 import LayerPanel from "./LayerPanel";
 import { useMap } from "../hooks/useMap";

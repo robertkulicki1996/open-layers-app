@@ -1,21 +1,17 @@
-import { transform } from "ol/proj";
-
-const referencePointEPSG2176: [number, number] = [5575800, 5996000]; // A point in EPSG:2176
-
 /**
- * Convert resolutions from EPSG:2176 to EPSG:3857
+ * Convert resolutions from EPSG:2176 to EPSG:3857 using a given scale factor.
  * @param resolutions - Resolutions in EPSG:2176
- * @param referencePoint - Reference point for conversion (e.g., [x, y] in EPSG:2176)
+ * @param scaleFactor - The scale factor to apply to resolutions (computed beforehand)
  * @returns Transformed resolutions in EPSG:3857
  */
 export function transformResolutions(
   resolutions: number[],
-  referencePoint: [number, number] = referencePointEPSG2176
+  scaleFactor: number,
 ): number[] {
-  const [x1, y1] = referencePoint;
-  const [x2, y2] = transform([x1, y1], "EPSG:2176", "EPSG:3857");
-
-  const scaleFactor = Math.abs(x2 - x1) / Math.abs(x1);
+  if (scaleFactor === null) {
+    console.error("Error: Scale factor could not be calculated.");
+    return resolutions;
+  }
 
   return resolutions.map((res) => res * scaleFactor);
 }

@@ -10,6 +10,8 @@ export interface RasterMetadata {
   maxY: number;
   minX: number;
   minY: number;
+  minVal?: number;
+  maxVal?: number;
   resolutions: number[];
   tileSize: TileSize;
 }
