@@ -11,20 +11,24 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { useFitToExtent } from "../hooks/useFitToExtent";
 import Zoom from "ol/control/Zoom";
+// import createElevationLayer from "../layers/elevationLayer";
 
 interface MapContainerProps {
-  rasterMetadata: RasterMetadata;
+  data: (RasterMetadata | null)[];
 }
 
-export default function MapContainer({ rasterMetadata }: MapContainerProps) {
-  const { map, setMap, layers, setLayers, featuresLayer, setFeaturesLayer } =
-    useMap();
+export default function MapContainer({ data }: MapContainerProps) {
+  const { map, setMap, layers, setLayers, featuresLayer, setFeaturesLayer } = useMap();
 
   const mapRef = useRef<HTMLDivElement>(null);
 
   const rgbLayer = useMemo(() => {
-    return rasterMetadata ? createRgbLayer(rasterMetadata) : null;
-  }, [rasterMetadata]);
+    return data[1] !== null  ? createRgbLayer(data[1]) : null;
+  }, [data[1]]);
+
+  // const elevationLayer = useMemo(() => {
+  //   return data[0] !== null  ? createElevationLayer(data[0]) : null;
+  // }, [data[0]]);
 
   const featureLayer = useMemo(
     () => new VectorLayer({ source: new VectorSource() }),
@@ -32,17 +36,23 @@ export default function MapContainer({ rasterMetadata }: MapContainerProps) {
   );
 
   useEffect(() => {
-    if (!mapRef.current || !rasterMetadata || map) return;
+    if (!mapRef.current || !data || map) return;
 
     const olMap = new Map({
       target: mapRef.current,
-      layers: [osmLayer, ...(rgbLayer ? [rgbLayer] : [])],
+      layers: [
+        osmLayer,
+        ...(rgbLayer ? [rgbLayer] : []),
+      ],
       view: new View({ projection: "EPSG:3857" }),
       controls: defaultControls().extend([new Zoom()]),
     });
 
     setMap(olMap);
-    setLayers([osmLayer, ...(rgbLayer ? [rgbLayer] : [])]);
+    setLayers([
+      osmLayer,
+      ...(rgbLayer ? [rgbLayer] : []),
+    ]);
     setFeaturesLayer(featureLayer);
 
     return () => {
@@ -50,7 +60,7 @@ export default function MapContainer({ rasterMetadata }: MapContainerProps) {
       setMap(null);
       setLayers([]);
     };
-  }, [rasterMetadata, rgbLayer]);
+  }, [rgbLayer]);
 
   useFitToExtent(map, layers, featuresLayer);
 

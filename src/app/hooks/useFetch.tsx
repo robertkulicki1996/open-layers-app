@@ -1,32 +1,43 @@
 import { useState, useEffect } from "react";
 
-export function useFetch<T>(url: string) {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+export function useFetch<T>(urls: string[]): {
+  data: T[] | null;
+  loading: boolean;
+  error: string | null;
+} {
+  const [data, setData] = useState<(T[] | null)>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!url) return;
+    if (urls.length === 0) return;
 
     const fetchData = async () => {
       setLoading(true);
+      setError(null);
+
       try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        setError((error as Error).message);
-      } finally {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const responses: T[] = await Promise.all(
+          urls.map(async (url) => {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+          })
+        );
+
+        setData(responses);
+
+        setLoading(false);
+      } catch (err) {
+        setError(`Błąd podczas ładowania danych: ${(err as Error).message}`);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [url]);
+  }, []);
 
   return { data, loading, error };
 }

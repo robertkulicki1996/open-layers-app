@@ -3,13 +3,10 @@ import { useFetch } from "../hooks/useFetch";
 import { RasterMetadata } from "../types";
 
 function MapView() {
-  const {
-    loading,
-    data: rasterMetadata,
-    error,
-  } = useFetch<RasterMetadata>(
-    "http://localhost:5173/data/6/rasters/500/500/metadata.json"
-  );
+  const { loading, data, error } = useFetch<RasterMetadata>([
+    "http://localhost:5173/data/6/rasters/499/499/metadata.json",
+    "http://localhost:5173/data/6/rasters/500/500/metadata.json",
+  ]);
 
   if (loading) {
     return (
@@ -51,8 +48,8 @@ function MapView() {
 
   return (
     <div>
-      {!loading && rasterMetadata ? (
-        <MapContainer rasterMetadata={rasterMetadata} />
+      {!loading && data?.length === 2 ? (
+        <MapContainer data={data} />
       ) : (
         <p>Brak metadanych.</p>
       )}

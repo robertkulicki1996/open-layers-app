@@ -5,5 +5,5 @@ export const osmLayer = new TileLayer({
   preload: Infinity,
   visible: true,
   source: new OSM(),
-  properties: { title: "Mapa bazowa" },
+  properties: { title: "Mapa bazowa - Open Street Map " },
 });

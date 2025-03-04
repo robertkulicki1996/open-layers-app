@@ -5,6 +5,7 @@ import { getScaleFactor } from "../utils/getScaleFactor";
 import { transformResolutions } from "../utils/transformResolutions";
 import TileLayer from "ol/layer/Tile";
 import TileGrid from "ol/tilegrid/TileGrid";
+
 /**
  * Function to create an RGB layer for raster data in EPSG:2176 and transform it to EPSG:3857.
  * @param { RasterMetadata } Raster metadata containing bounding box, resolutions, and tile size.
