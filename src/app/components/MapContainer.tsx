@@ -11,6 +11,7 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { useFitToExtent } from "../hooks/useFitToExtent";
 import Zoom from "ol/control/Zoom";
+// import { elevationLayer } from "../layers/elevationLayer";
 // import createElevationLayer from "../layers/elevationLayer";
 
 interface MapContainerProps {
@@ -25,10 +26,6 @@ export default function MapContainer({ data }: MapContainerProps) {
   const rgbLayer = useMemo(() => {
     return data[1] !== null  ? createRgbLayer(data[1]) : null;
   }, [data[1]]);
-
-  // const elevationLayer = useMemo(() => {
-  //   return data[0] !== null  ? createElevationLayer(data[0]) : null;
-  // }, [data[0]]);
 
   const featureLayer = useMemo(
     () => new VectorLayer({ source: new VectorSource() }),

@@ -1,90 +1,94 @@
-// import { Map, View } from "ol";
+// import { RasterMetadata } from "../types";
+// import * as Lerc from "lerc";
+// import { XYZ } from "ol/source";
+// import { transformExtent } from "ol/proj";
+// import { getScaleFactor } from "../utils/getScaleFactor";
+// import { transformResolutions } from "../utils/transformResolutions";
 // import TileLayer from "ol/layer/Tile";
-// import { ImageTile } from "ol/source";
-// import * as LERC from "lerc"; // Import LERC library
-// import { ImageLike } from "ol/DataTile";
-// import { Loader } from "ol/source/ImageTile";
+// import TileGrid from "ol/tilegrid/TileGrid";
 
+// async function loadLercTile(url: string): Promise<HTMLCanvasElement> {
+//   const response = await fetch(url);
+//   const arrayBuffer = await response.arrayBuffer();
+//   const lercData = Lerc.decode(arrayBuffer);
 
-// // Function to decode LERC data and create an image for the tile
-// async function decodeLercData(
-//   arrayBuffer: ArrayBuffer
-// ): Promise<HTMLImageElement> {
-//   const pixelBlock = LERC.decode(arrayBuffer);
-//   const { height, width, pixels, mask } = pixelBlock;
-
-//   // Create a canvas to render the image
+//   const { width, height, pixels } = lercData;
 //   const canvas = document.createElement("canvas");
-//   const ctx = canvas.getContext("2d")!;
 //   canvas.width = width;
 //   canvas.height = height;
+//   const ctx = canvas.getContext("2d");
+//   if (!ctx) throw new Error("Brak kontekstu 2D");
 
 //   const imageData = ctx.createImageData(width, height);
-//   const data = imageData.data;
+//   const min = Math.min(200);
+//   const max = Math.max(100);
 
-//   // Process each pixel
-//   for (let i = 0; i < height; i++) {
-//     for (let j = 0; j < width; j++) {
-//       const idx = i * width + j;
-//       if (!mask || mask[idx]) {
-//         const elevation = pixels[idx]; // Get elevation data
+//   for (let i = 0; i < pixels.length; i++) {
+//     const value = (100 - min) / (max - min); // Normalizacja 0-1
+//     const grayscale = Math.floor(value * 255);
 
-//         // Convert elevation to RGB for visualization (You can customize this)
-//         const color = elevationToColor(elevation);
-
-//         // Set the pixel color (RGBA format)
-//         const pixelIndex = idx * 4;
-//         data[pixelIndex] = color.r;
-//         data[pixelIndex + 1] = color.g;
-//         data[pixelIndex + 2] = color.b;
-//         data[pixelIndex + 3] = 255; // Full opacity
-//       }
-//     }
+//     imageData.data[i * 4] = grayscale; // R
+//     imageData.data[i * 4 + 1] = grayscale; // G
+//     imageData.data[i * 4 + 2] = grayscale; // B
+//     imageData.data[i * 4 + 3] = 255; // Alpha
 //   }
 
 //   ctx.putImageData(imageData, 0, 0);
+//   return canvas;
+// }
 
-//   // Create an image from the canvas
-//   const img = new Image();
-//   img.src = canvas.toDataURL();
+// export default function createElevationLayer({
+//   minX,
+//   minY,
+//   maxX,
+//   maxY,
+//   resolutions,
+//   tileSize,
+// }: RasterMetadata): TileLayer {
+//   const transformedExtent = transformExtent(
+//     [minX, minY, maxX, maxY],
+//     "EPSG:2176",
+//     "EPSG:3857"
+//   );
 
-//   return new Promise((resolve, reject) => {
-//     img.onload = () => resolve(img);
-//     img.onerror = reject;
+//   const scaleFactor = getScaleFactor(
+//     [minX, minY],
+//     [maxX, maxY],
+//     "EPSG:2176",
+//     "EPSG:3857"
+//   );
+
+//   const transformedResolutions = transformResolutions(resolutions, scaleFactor);
+
+//   const tileGrid = new TileGrid({
+//     extent: transformedExtent,
+//     resolutions: transformedResolutions,
+//     tileSize,
 //   });
-// }
 
-// // Helper function to convert elevation to RGB color
-// function elevationToColor(elevation: number): {
-//   r: number;
-//   g: number;
-//   b: number;
-// } {
-//   const normalized = Math.min(255, Math.max(0, elevation));
-//   return {
-//     r: normalized, // Red channel
-//     g: normalized, // Green channel
-//     b: 255 - normalized, // Blue channel
-//   };
-// }
-
-// const tileLayer = new TileLayer({
-//   source: new ImageTile({
-//     loader: async function (z: number, x: number, y: number) {
-//       const url = "http://localhost:5173/data/6/rasters/499/499/{z}/{x}/{y}.lerc"
-//         .replace("{z}", z.toString())
-//         .replace("{x}", x.toString())
-//         .replace("{y}", y.toString());
+//   const source = new XYZ({
+//     tileSize: 512,
+//     url: "http://localhost:5173/data/6/rasters/499/499/{z}/{x}/{y}.lerc",
+//     projection: "EPSG:3857",
+//     tileGrid,
+//     crossOrigin: "anonymous",
+//     tileLoadFunction: async (imageTile, src) => {
 //       try {
-//         const response = await fetch(url);
-//         const arrayBuffer = await response.arrayBuffer();
-  
-//         // Decode LERC data and return image
-//         const image = await decodeLercData(arrayBuffer);
-//         return image;
+//         console.log("Ładowanie kafla:", imageTile, src);
+//         const canvas = await loadLercTile(src);
+//         // tile.getImage().src = canvas.toDataURL();
 //       } catch (error) {
-//         console.error("Error loading LERC tile:", error);
+//         console.error("Błąd ładowania kafla:", src, error);
 //       }
 //     },
+//   })
+
+//   const elevationLayer = new TileLayer({
+//     visible: true,
+//     properties: { title: "Mapa rastrowa - wysokościowa" },
+//     extent: transformedExtent,
+//     source,
 //   });
-// });
+
+//   return elevationLayer;
+// }
