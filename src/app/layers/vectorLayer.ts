@@ -3,7 +3,12 @@ import GeoJSON from "ol/format/GeoJSON";
 import VectorLayer from "ol/layer/Vector";
 import { bbox } from "ol/loadingstrategy";
 
-export default function createVectorLayer(): VectorLayer {
+/**
+ * Tworzy warstwę wektorową.
+ * @param {string} title - Tytuł warstwy.
+ * @returns {VectorLayer} - Warstwa wektorowa.
+ */
+export function createVectorLayer(title: string): VectorLayer {
   const vectorSource = new VectorSource({
     format: new GeoJSON(),
     strategy: bbox,
@@ -25,10 +30,8 @@ export default function createVectorLayer(): VectorLayer {
         });
     },
   });
-	
   return new VectorLayer({
-    visible: true,
-    properties: { title: "Mapa wektorowa - wysokościowa" },
+    properties: { title },
     source: vectorSource,
   });
 }

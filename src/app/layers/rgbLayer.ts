@@ -7,31 +7,28 @@ import TileLayer from "ol/layer/Tile";
 import TileGrid from "ol/tilegrid/TileGrid";
 
 /**
- * Function to create an RGB layer for raster data in EPSG:2176 and transform it to EPSG:3857.
- * @param { RasterMetadata } Raster metadata containing bounding box, resolutions, and tile size.
- * @returns { TileLayer } OpenLayers TileLayer for displaying raster data.
+ * Tworzy warstwę RGB na podstawie metadanych rastrowych w projekcji EPSG:2176.
+ * @param {string} title - Tytuł warstwy.
+ * @param {RasterMetadata} metadata - Metadane rastra.
+ * @returns {TileLayer} - Warstwa RGB.
  */
-export default function createRgbLayer({
-  minX,
-  minY,
-  maxX,
-  maxY,
-  resolutions,
-  tileSize,
-}: RasterMetadata): TileLayer {
+export function createRgbLayer(
+  title: string,
+  metadata: RasterMetadata
+): TileLayer {
+  const { minX, minY, maxX, maxY, resolutions, tileSize } = metadata;
+
   const transformedExtent = transformExtent(
     [minX, minY, maxX, maxY],
     "EPSG:2176",
     "EPSG:3857"
   );
-
   const scaleFactor = getScaleFactor(
     [minX, minY],
     [maxX, maxY],
     "EPSG:2176",
     "EPSG:3857"
   );
-
   const transformedResolutions = transformResolutions(resolutions, scaleFactor);
 
   const tileGrid = new TileGrid({
@@ -40,18 +37,14 @@ export default function createRgbLayer({
     tileSize,
   });
 
-  const source = new XYZ({
-    url: `http://localhost:5173/data/6/rasters/500/500/{z}/{x}/{y}.webp`,
-    projection: "EPSG:3857",
-    tileGrid,
-  });
-
-  const rgbLayer = new TileLayer({
+  return new TileLayer({
     visible: true,
-    properties: { title: "Mapa rastrowa - RGB" },
+    properties: { title },
     extent: transformedExtent,
-    source,
+    source: new XYZ({
+      url: "http://localhost:5173/data/6/rasters/500/500/{z}/{x}/{y}.webp",
+      projection: "EPSG:3857",
+      tileGrid,
+    }),
   });
-
-  return rgbLayer;
 }

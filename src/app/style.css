@@ -4,7 +4,7 @@ body {
   height: 100%;
 }
 
-/* MapContainer */
+/* MapContainer styles */
 .map-container {
   position: relative;
   width: 100vw;
@@ -54,40 +54,40 @@ body {
   accent-color: #00b0ef;
 }
 
-/* Controls */
+/* Controls styles */
 
-/* Dostosowanie kontrolek zoomu (plus i minus) */
 .ol-zoom {
-  background-color: #061727; /* Kolor tła */
-  border-radius: 4px; /* Zaokrąglenie rogów */
-  padding: 10px; /* Powiększenie kontrolek */
+  background-color: #061727;
+  border-radius: 12px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: absolute;
-  top: 20px; /* Odstęp od góry */
-  left: 20px; /* Odstęp od lewej */
-  z-index: 10; /* Ustawienie nad innymi elementami */
+  top: 200px;
+  left: 20px;
+  z-index: 10;
+  margin-bottom: 2px;
 }
 
-/* Zwiększenie rozmiaru przycisków plusa i minusa */
 .ol-zoom-in,
 .ol-zoom-out {
-  font-size: 30px; /* Zwiększenie czcionki (przyciski zoomu) */
-  color: #00b0ef; /* Kolor przycisków */
+  font-size: 30px;
+  color: #00b0ef;
   padding: 8px;
   cursor: pointer;
+  border: 0;
+  margin-bottom: 2px;
+  border-radius: 4px;
 }
 
-/* Zmiana koloru przycisków zoomu po najechaniu */
 .ol-zoom-in:hover,
 .ol-zoom-out:hover {
-  background-color: #00b0ef; /* Kolor tła po najechaniu */
-  color: #061727; /* Kolor tekstu */
-  border-radius: 4px; /* Zaokrąglenie */
+  background-color: #00b0ef;
+  color: #061727;
+  border-radius: 4px;
 }
 
-/* Zmiana koloru kontenerów na zoom-out */
 .ol-zoom-out {
   background-color: #061727;
   color: #00b0ef;

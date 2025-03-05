@@ -1,9 +1,14 @@
-import TileLayer from "ol/layer/Tile";
-import OSM from "ol/source/OSM";
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 
-export const osmLayer = new TileLayer({
-  preload: Infinity,
-  visible: true,
-  source: new OSM(),
-  properties: { title: "Mapa bazowa - Open Street Map " },
-});
+/**
+ * Tworzy warstwę OpenStreetMap.
+ * @param {string} title - Tytuł warstwy.
+ * @returns {TileLayer} - Warstwa OpenStreetMap.
+ */
+export function createOsmLayer(title: string): TileLayer {
+  return new TileLayer({
+    source: new OSM(),
+    properties: { title },
+  });
+}
