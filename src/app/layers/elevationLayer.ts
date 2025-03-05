@@ -9,6 +9,9 @@
 // import ImageTileSource from "ol/source/ImageTile";
 // import { ImageLike } from "ol/DataTile";
 
+import WebGLTileLayer from "ol/layer/WebGLTile";
+import { GeoTIFF } from "ol/source";
+
 // async function loadLercTile(
 //   url: string,
 //   minVal: number,
@@ -148,3 +151,21 @@
 
 //   return elevationLayer;
 // }
+
+export default function createElevationLayer(title: string): WebGLTileLayer {
+  const source = new GeoTIFF({
+    sources: [
+      {
+        url: "http://localhost:5173/data/6/rasters/499/499.tif",
+      },
+    ],
+    projection: "EPSG:2176",
+    normalize: true,
+  });
+
+  return new WebGLTileLayer({
+    visible: true,
+    properties: { title },
+    source,
+  });
+}

@@ -10,6 +10,7 @@ import Zoom from "ol/control/Zoom";
 import { createOsmLayer } from "../layers/osmLayer";
 import { createRgbLayer } from "../layers/rgbLayer";
 import { createVectorLayer } from "../layers/vectorLayer";
+import createElevationLayer from "../layers/elevationLayer";
 
 interface MapContainerProps {
   data: RasterMetadata[];
@@ -27,6 +28,7 @@ export default function MapContainer({ data }: MapContainerProps) {
 
     const osmLayer = createOsmLayer("Mapa bazowa - Open street map");
     const rgbLayer = createRgbLayer("Mapa rastrowa - RGB", rasterMetadata2);
+    // const elevationLayer = createElevationLayer("Mapa rastrowa - wysokościowa");
     const vectorLayer = createVectorLayer("Mapa wektorowa");
 
     const olMap = new Map({
