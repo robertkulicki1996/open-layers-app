@@ -11,7 +11,8 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { useFitToExtent } from "../hooks/useFitToExtent";
 import Zoom from "ol/control/Zoom";
-// import { elevationLayer } from "../layers/elevationLayer";
+import createVectorLayer from "../layers/vectorLayer";
+// import createVectorLayer from "../layers/vectorLayer";
 // import createElevationLayer from "../layers/elevationLayer";
 
 interface MapContainerProps {
@@ -19,38 +20,32 @@ interface MapContainerProps {
 }
 
 export default function MapContainer({ data }: MapContainerProps) {
-  const { map, setMap, layers, setLayers, featuresLayer, setFeaturesLayer } = useMap();
+  const { map, setMap, layers, setLayers } = useMap();
 
   const mapRef = useRef<HTMLDivElement>(null);
 
   const rgbLayer = useMemo(() => {
-    return data[1] !== null  ? createRgbLayer(data[1]) : null;
+    return data[1] !== null ? createRgbLayer(data[1]) : null;
   }, [data[1]]);
 
-  const featureLayer = useMemo(
-    () => new VectorLayer({ source: new VectorSource() }),
-    []
-  );
+  // const elevationLayer = useMemo(() => {
+  //   return data[0] !== null  ? createElevationLayer(data[0]) : null;
+  // }, [data[0]]);
+
+  const vectorLayer = useMemo(() => createVectorLayer(), []);
 
   useEffect(() => {
     if (!mapRef.current || !data || map) return;
 
     const olMap = new Map({
       target: mapRef.current,
-      layers: [
-        osmLayer,
-        ...(rgbLayer ? [rgbLayer] : []),
-      ],
+      layers: [osmLayer, ...(rgbLayer ? [rgbLayer] : []), vectorLayer],
       view: new View({ projection: "EPSG:3857" }),
       controls: defaultControls().extend([new Zoom()]),
     });
 
     setMap(olMap);
-    setLayers([
-      osmLayer,
-      ...(rgbLayer ? [rgbLayer] : []),
-    ]);
-    setFeaturesLayer(featureLayer);
+    setLayers([osmLayer, ...(rgbLayer ? [rgbLayer] : []), vectorLayer]);
 
     return () => {
       olMap.setTarget(undefined);
@@ -59,7 +54,7 @@ export default function MapContainer({ data }: MapContainerProps) {
     };
   }, [rgbLayer]);
 
-  useFitToExtent(map, layers, featuresLayer);
+  useFitToExtent(map, layers);
 
   return (
     <div className="map-container">

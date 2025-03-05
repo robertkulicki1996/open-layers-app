@@ -9,7 +9,7 @@ import { Geometry } from "ol/geom";
 export function useFitToExtent(
   map: Map | null,
   layers: Layer[],
-  featuresLayer: VectorLayer<
+  featuresLayer?: VectorLayer<
     VectorSource<Feature<Geometry>>,
     Feature<Geometry>
   > | null
