@@ -1,4 +1,4 @@
-export enum EPSG {
+export enum Projection {
   EPSG_2176 = "EPSG:2176",
   EPSG_3857 = "EPSG:3857",
 }

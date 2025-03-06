@@ -5,7 +5,7 @@ export function useFetch<T>(urls: string[]): {
   loading: boolean;
   error: string | null;
 } {
-  const [data, setData] = useState<(T[] | null)>(null);
+  const [data, setData] = useState<T[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,17 +21,18 @@ export function useFetch<T>(urls: string[]): {
           urls.map(async (url) => {
             const response = await fetch(url);
             if (!response.ok) {
-              throw new Error(`Error ${response.status}: ${response.statusText}`);
+              throw new Error(
+                `Error ${response.status}: ${response.statusText}`
+              );
             }
             return response.json();
           })
         );
 
         setData(responses);
-
-        setLoading(false);
       } catch (err) {
         setError(`Błąd podczas ładowania danych: ${(err as Error).message}`);
+      } finally {
         setLoading(false);
       }
     };

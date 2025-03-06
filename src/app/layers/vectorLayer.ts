@@ -19,12 +19,12 @@ export function createVectorLayer(title: string): VectorLayer {
           const geoJSONFormat = new GeoJSON();
           const features = geoJSONFormat.readFeatures(geojson);
 
-          features.forEach((feature) => {
-            const geometry = feature.getGeometry();
-            if (geometry) {
-              geometry.transform("EPSG:2176", "EPSG:3857");
-            }
-          });
+          // features.forEach((feature) => {
+          //   const geometry = feature.getGeometry();
+          //   if (geometry) {
+          //     geometry.transform("EPSG:2176", "EPSG:3857");
+          //   }
+          // });
 
           vectorSource.addFeatures(features);
         });

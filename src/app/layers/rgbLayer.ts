@@ -1,8 +1,5 @@
 import { XYZ } from "ol/source";
-import { transformExtent } from "ol/proj";
-import { RasterMetadata } from "../types";
-import { getScaleFactor } from "../utils/getScaleFactor";
-import { transformResolutions } from "../utils/transformResolutions";
+import { Projection, RasterMetadata } from "../types";
 import TileLayer from "ol/layer/Tile";
 import TileGrid from "ol/tilegrid/TileGrid";
 
@@ -18,33 +15,39 @@ export function createRgbLayer(
 ): TileLayer {
   const { minX, minY, maxX, maxY, resolutions, tileSize } = metadata;
 
-  const transformedExtent = transformExtent(
-    [minX, minY, maxX, maxY],
-    "EPSG:2176",
-    "EPSG:3857"
-  );
-  const scaleFactor = getScaleFactor(
-    [minX, minY],
-    [maxX, maxY],
-    "EPSG:2176",
-    "EPSG:3857"
-  );
-  const transformedResolutions = transformResolutions(resolutions, scaleFactor);
+  // const transformedExtent = transformExtent(
+  //   [minX, minY, maxX, maxY],
+  //   "EPSG:2176",
+  //   "EPSG:3857"
+  // );
+
+  // const scaleFactor = getScaleFactor(
+  //   [minX, minY],
+  //   [maxX, maxY],
+  //   "EPSG:2176",
+  //   "EPSG:3857"
+  // );
+
+  // const transformedResolutions = transformResolutions(resolutions, scaleFactor);
+
+  const extent = [minX, minY, maxX, maxY];
 
   const tileGrid = new TileGrid({
-    extent: transformedExtent,
-    resolutions: transformedResolutions,
+    extent,
+    resolutions,
     tileSize,
+  });
+
+  const source = new XYZ({
+    url: "http://localhost:5173/data/6/rasters/500/500/{z}/{x}/{y}.webp",
+    projection: Projection.EPSG_2176,
+    tileGrid,
   });
 
   return new TileLayer({
     visible: true,
     properties: { title },
-    extent: transformedExtent,
-    source: new XYZ({
-      url: "http://localhost:5173/data/6/rasters/500/500/{z}/{x}/{y}.webp",
-      projection: "EPSG:3857",
-      tileGrid,
-    }),
+    extent,
+    source,
   });
 }

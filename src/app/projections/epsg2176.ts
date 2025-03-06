@@ -1,5 +1,5 @@
-import { get } from "ol/proj";
 import { register } from "ol/proj/proj4";
+import { get as getProjection } from 'ol/proj';
 import proj4 from "proj4";
 
 export function registerEPSG2176() {
@@ -9,5 +9,6 @@ export function registerEPSG2176() {
   );
   register(proj4);
 
-  console.log(get("EPSG:2176"));
+  const projection = getProjection('EPSG:2176');
+  console.log(projection);
 }
