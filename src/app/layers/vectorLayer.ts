@@ -4,9 +4,18 @@ import VectorLayer from "ol/layer/Vector";
 import { bbox } from "ol/loadingstrategy";
 
 /**
- * Tworzy warstwę wektorową.
- * @param {string} title - Tytuł warstwy.
- * @returns {VectorLayer} - Warstwa wektorowa.
+ * Creates a vector layer.
+ *
+ * This function creates a new vector layer by fetching a GeoJSON file from the provided URL,
+ * parsing it, and adding the features to the vector source. The vector layer is then returned
+ * with the specified title.
+ *
+ * @param { string } title - The title of the vector layer.
+ * @returns { VectorLayer } - The created vector layer.
+ *
+ * @example
+ * // Create a vector layer with the title "My Vector Layer"
+ * const vectorLayer = createVectorLayer("My Vector Layer");
  */
 export function createVectorLayer(title: string): VectorLayer {
   const vectorSource = new VectorSource({
@@ -18,14 +27,6 @@ export function createVectorLayer(title: string): VectorLayer {
         .then((geojson) => {
           const geoJSONFormat = new GeoJSON();
           const features = geoJSONFormat.readFeatures(geojson);
-
-          // features.forEach((feature) => {
-          //   const geometry = feature.getGeometry();
-          //   if (geometry) {
-          //     geometry.transform("EPSG:2176", "EPSG:3857");
-          //   }
-          // });
-
           vectorSource.addFeatures(features);
         });
     },
@@ -33,5 +34,6 @@ export function createVectorLayer(title: string): VectorLayer {
   return new VectorLayer({
     properties: { title },
     source: vectorSource,
+    zIndex: 3
   });
 }

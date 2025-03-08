@@ -1,7 +1,11 @@
 html,
 body {
   margin: 0;
-  height: 100%;
+  overflow: hidden;
+}
+
+p {
+  margin: 0;
 }
 
 /* MapContainer styles */
@@ -9,6 +13,7 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .map {
@@ -16,14 +21,36 @@ body {
   height: 100%;
 	margin: 0;
 	padding: 0;
+  overflow: hidden;
 }
+
+/* CoordinatesPanel styles */
+
+.coordinates-panel {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 8px 16px;
+  background-color: #061727;
+  color: white;
+	font-family: sans-serif, Arial;
+  text-align: right;
+  font-size: 14px;
+  border-radius: 12px;
+}
+
+.coordinates-panel > .projection {
+  color: #00b0ef;
+  margin-left: 8px;
+}
+
 
 /* LayerPanel styles */
 
 .layer-panel {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 8px;
+  left: 8px;
   width: 250px;
   padding: 16px;
   background-color: #061727;
@@ -64,8 +91,8 @@ body {
   flex-direction: column;
   align-items: center;
   position: absolute;
-  top: 200px;
-  left: 20px;
+  bottom: 8px;
+  left: 8px;
   z-index: 10;
   margin-bottom: 2px;
 }

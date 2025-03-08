@@ -17,6 +17,7 @@ export function useFetch<T>(urls: string[]): {
       setError(null);
 
       try {
+        // await new Promise(resolve => setTimeout(resolve, 3000));
         const responses: T[] = await Promise.all(
           urls.map(async (url) => {
             const response = await fetch(url);

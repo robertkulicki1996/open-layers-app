@@ -35,7 +35,7 @@ export function useFitToExtent(
     if (combinedExtent) {
       map
         .getView()
-        .fit(combinedExtent, { padding: [10, 10, 10, 10], duration: 2000 });
+        .fit(combinedExtent, { padding: [50, 50, 50, 50], duration: 2000 });
     }
   }, [map, layers, featuresLayer]);
 }

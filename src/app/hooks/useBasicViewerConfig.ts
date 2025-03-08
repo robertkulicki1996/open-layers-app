@@ -1,33 +1,36 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
-// export default function useBasicViewerConfig(
-//   loaded,
-//   potreeLibRef,
-//   potreeViewerRef
-// ) {
-//   useEffect(() => {
-//     if (loaded && potreeViewerRef.current && potreeLibRef.current) {
-//       const Potree = potreeLibRef.current;
-//       const viewer = potreeViewerRef.current;
+interface UseBasicViewerConfigProps {
+  loaded: boolean;
+  potreeLibRef: React.RefObject<any>;
+  potreeViewerRef: React.RefObject<any>;
+}
 
-//       viewer.setEDLEnabled(true);
-//       viewer.setFOV(60);
-//       viewer.setPointBudget(1_000_000);
-//       viewer.loadSettingsFromURL();
-//       viewer.setBackground("gradient");
-//       viewer.setDescription("potree component");
+export default function useBasicViewerConfig({
+  loaded,
+  potreeLibRef,
+  potreeViewerRef,
+}: UseBasicViewerConfigProps) {
+  useEffect(() => {
+    if (loaded && potreeViewerRef.current && potreeLibRef.current) {
+      const Potree = potreeLibRef.current;
+      const viewer = potreeViewerRef.current;
 
-//       const controls = new Potree.EarthControls(viewer);
-//       viewer.setControls(controls);
+      viewer.setEDLEnabled(true);
+      viewer.setFOV(60);
+      viewer.setPointBudget(1_000_000);
+      viewer.loadSettingsFromURL();
+      viewer.setBackground("gradient");
+      viewer.setDescription("potree component");
 
-//       viewer.loadGUI(() => {
-//         viewer.setLanguage("en");
-//         // $("#menu_tools").next().show();
-//         // $("#menu_clipping").next().show();
-//         // viewer.toggleSidebar();
-//       });
+      const controls = new Potree.EarthControls(viewer);
+      viewer.setControls(controls);
 
-//       console.log("using basic Potree viewer config");
-//     }
-//   }, [loaded, potreeViewerRef, potreeLibRef]);
-// }
+      viewer.loadGUI(() => {
+        viewer.setLanguage("en");
+      });
+
+      console.log("using basic Potree viewer config");
+    }
+  }, [loaded, potreeViewerRef, potreeLibRef]);
+}

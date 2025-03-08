@@ -1,40 +1,49 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
-// export default function useLoadPointcloud(
-//   loaded,
-//   potreeLibRef,
-//   potreeViewerRef,
-//   pointcloudURL,
-//   pointcloudTitle,
-//   fitToScreen = false
-// ) {
-//   useEffect(() => {
-//     if (loaded && potreeViewerRef.current && potreeLibRef.current) {
-//       const Potree = potreeLibRef.current;
-//       const viewer = potreeViewerRef.current;
+interface UseLoadPointcloudProps {
+  loaded: boolean;
+  potreeLibRef: React.RefObject<any>;
+  potreeViewerRef: React.RefObject<any>;
+  pointcloudURL: string;
+  pointcloudTitle: string;
+  fitToScreen?: boolean;
+}
 
-//       Potree.loadPointCloud(pointcloudURL, pointcloudTitle, (e) => {
-//         let scene = viewer.scene;
-//         let pointcloud = e.pointcloud;
+export default function useLoadPointcloud({
+  loaded,
+  potreeLibRef,
+  potreeViewerRef,
+  pointcloudURL,
+  pointcloudTitle,
+  fitToScreen = false,
+}: UseLoadPointcloudProps) {
+  useEffect(() => {
+    if (loaded && potreeViewerRef.current && potreeLibRef.current) {
+      const Potree = potreeLibRef.current;
+      const viewer = potreeViewerRef.current;
 
-//         let material = pointcloud.material;
-//         material.size = 1;
-//         material.pointSizeType = Potree.PointSizeType.FIXED;
-//         material.shape = Potree.PointShape.CIRCLE;
+      Potree.loadPointCloud(pointcloudURL, pointcloudTitle, (e: any) => {
+        let scene = viewer.scene;
+        let pointcloud = e.pointcloud;
 
-//         scene.addPointCloud(pointcloud);
+        let material = pointcloud.material;
+        material.size = 1;
+        material.pointSizeType = Potree.PointSizeType.FIXED;
+        material.shape = Potree.PointShape.CIRCLE;
 
-//         fitToScreen && viewer.fitToScreen();
+        scene.addPointCloud(pointcloud);
 
-//         console.log(`added pointcloud ${pointcloudTitle}`);
-//       });
-//     }
-//   }, [
-//     fitToScreen,
-//     loaded,
-//     pointcloudTitle,
-//     pointcloudURL,
-//     potreeLibRef,
-//     potreeViewerRef,
-//   ]);
-// }
+        fitToScreen && viewer.fitToScreen();
+
+        console.log(`added pointcloud ${pointcloudTitle}`);
+      });
+    }
+  }, [
+    fitToScreen,
+    loaded,
+    pointcloudTitle,
+    pointcloudURL,
+    potreeLibRef,
+    potreeViewerRef,
+  ]);
+}
