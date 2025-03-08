@@ -28,7 +28,7 @@ export default function PotreePointcloud() {
 
   return (
     <iframe
-      title="3D Pointcloud"
+      title="Chmura punktów 3D"
       id="potreeIframe"
       src="potree/viewer.html"
       ref={iframe}
