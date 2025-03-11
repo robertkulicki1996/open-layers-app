@@ -2,7 +2,21 @@ import { useEffect, useState } from "react";
 import { useMap } from "../hooks/useMap";
 import { Projection } from "../types";
 
-const CoordinatesPanel = () => {
+/**
+ * CoordinatesPanel component displays the current coordinates (easting, northing)
+ * based on the user's mouse pointer position on the map.
+ *
+ * It listens for mouse pointer movement on the map and updates the coordinates
+ * in the `EPSG_2176` projection.
+ *
+ * @component
+ * @returns {JSX.Element} Renders the panel showing the current coordinates (easting, northing).
+ *
+ * @example
+ * // Usage in a parent component:
+ * <CoordinatesPanel />
+ */
+const CoordinatesPanel = (): JSX.Element => {
   const { map } = useMap();
   const [coordinates, setCoordinates] = useState<{
     easting: string | null;

@@ -26,7 +26,9 @@ import * as Lerc from "lerc";
  *   console.error('Error loading WebAssembly:', error);
  * });
  */
-export const loadWasm = async (locateFile = "/lerc-wasm.wasm"): Promise<void> => {
+export const loadWasm = async (
+  locateFile = "/lerc-wasm.wasm"
+): Promise<void> => {
   try {
     await Lerc.load({ locateFile: () => locateFile });
     console.log("WebAssembly loaded successfully!");

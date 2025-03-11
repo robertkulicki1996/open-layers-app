@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-// import { createLazPerf } from 'laz-perf';
 
 interface UseLoadPointcloudProps {
   loaded: boolean;
@@ -9,6 +8,7 @@ interface UseLoadPointcloudProps {
   pointcloudTitle: string;
   fitToScreen?: boolean;
 }
+
 
 export default function useLoadPointcloud({
   loaded,
@@ -23,69 +23,84 @@ export default function useLoadPointcloud({
       const Potree = potreeLibRef.current;
       const viewer = potreeViewerRef.current;
 
-      // const loadLasFile = async () => {
-      //   const url = "http://localhost:5173/data/6/pointclouds/2473/2473.laz";
-  
-      //   try {
-      //     const response = await fetch(url);
-      //     const arrayBuffer = await response.arrayBuffer();
-      //     const LazPerf = await createLazPerf();
+      const loadLasFile = async () => {
+       
+      
+        try {
 
-      //     // Dekodowanie pliku .laz
-      //     const lasFile = new LA(arrayBuffer);
-      //     lasFile.open();
+
+        // 1. Wczytanie pliku LAS i utworzenie chmury punktów
+        Potree.loadPointCloud(pointcloudURL, "MyPointCloud", (e: any) => {
+          let pointcloud = e.pointcloud;
+          let scene = viewer.scene;
+
+          // 2. Ustawienie materiału chmury punktów
+          let material = pointcloud.material;
+          material.size = 1;
+          material.pointSizeType = Potree.PointSizeType.FIXED;
+          material.shape = Potree.PointShape.CIRCLE;
+
+          // 3. Dodanie chmury punktów do sceny Potree
+          scene.addPointCloud(pointcloud);
+          viewer.fitToScreen(); // Dopasowanie do widoku
+          console.log("Chmura punktów została załadowana!");
+        });
+   
+
+        // // 1. Tworzymy instancję LazPerf
+        // const LazPerf = await createLazPerf();
+        // const laszip = new LazPerf.LASZip();
+
+        // // 2. Alokujemy pamięć wirtualną na dane
+        // const filePtr = LazPerf._malloc(arrayBuffer.byteLength); // Przydzielamy miejsce w pamięci
+
+        // // 3. Kopiujemy dane z ArrayBuffer do pamięci wirtualnej
+        // LazPerf.HEAPU8.set(new Uint8Array(arrayBuffer), filePtr);
+
+        // // 4. Otwieramy plik w pamięci
+        // laszip.open(filePtr, arrayBuffer.byteLength); // Otwarcie pliku z pamięci wirtualnej
+
   
-      //     const header = lasFile.getHeader();
-      //     console.log("Nagłówek pliku:", header);
-  
-      //     // Pobranie punktów z pliku
-      //     lasFile.readData(header.pointsCount, (points) => {
-      //       console.log("Przykładowe punkty:", points);
-  
-      //       // Konwersja do formatu kompatybilnego z Three.js
-      //       const geometry = new THREE.BufferGeometry();
-      //       const positions = new Float32Array(points.length * 3);
+        //   const points = [];
+        //   for (let i = 0; i < laszip.getPointCount(); i++) {
+        //     laszip.getPoint(filePtr); // Pobranie punktu
+        //     const pointData = LazPerf.HEAPU8.subarray(filePtr, filePtr + laszip.getPointDataLength());
             
-      //       for (let i = 0; i < points.length; i++) {
-      //         positions[i * 3] = points[i].position[0];
-      //         positions[i * 3 + 1] = points[i].position[1];
-      //         positions[i * 3 + 2] = points[i].position[2];
-      //       }
+        //     // Zastosowanie konwersji na XYZ, zakładając, że wiesz, jak interpretować te dane
+        //     const x = pointData[0]; // Właściwe dekodowanie w zależności od formatu pliku
+        //     const y = pointData[4];
+        //     const z = pointData[8];
+            
+        //     points.push(new THREE.Vector3(x, y, z));
+        //   }
   
-      //       geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        //   // 4. Tworzenie geometrii chmury punktów
+        //   const geometry = new THREE.BufferGeometry();
+        //   const positionArray = new Float32Array(points.length * 3);
   
-      //       // Dodanie chmury punktów do Potree
-      //       const material = new THREE.PointsMaterial({ size: 0.05, color: 0xffffff });
-      //       const pointCloud = new THREE.Points(geometry, material);
+        //   points.forEach((point, index) => {
+        //     positionArray.set([point.x, point.y, point.z], index * 3);
+        //   });
   
-      //       // Inicjalizacja Potree
-      //       const viewer = new Potree.Viewer(document.getElementById("potree_render_area"));
-      //       viewer.setEDLEnabled(true);
-      //       viewer.scene.addPointCloud(pointCloud);
-      //       viewer.fitToScreen();
-      //     });
+        //   geometry.setAttribute("position", new THREE.BufferAttribute(positionArray, 3));
   
-      //     lasFile.close();
-      //   } catch (error) {
-      //     console.error("Błąd podczas odczytu pliku LAS:", error);
-      //   }
-      // };
+        //   // 5. Użycie materiału do chmury punktów
+        //   const material = new Potree.PointCloudMaterial();
+        //   const pointCloud = new Potree.PointCloudOctree(geometry, material);
+  
+        //   // 6. Dodanie chmury punktów do sceny Potree
+        //   const viewer = new Potree.Viewer(document.getElementById("potree_container"));
+        //   viewer.scene.addPointCloud(pointCloud);
+        //   viewer.fitToScreen();
+  
+        } catch (error) {
+          console.error("Błąd podczas ładowania pliku LAS:", error);
+        }
 
-      Potree.loadPointCloud(pointcloudURL, pointcloudTitle, (e: any) => {
-        let scene = viewer.scene;
-        let pointcloud = e.pointcloud;
+      
+      }
 
-        let material = pointcloud.material;
-        material.size = 1;
-        material.pointSizeType = Potree.PointSizeType.FIXED;
-        material.shape = Potree.PointShape.CIRCLE;
-
-        scene.addPointCloud(pointcloud);
-
-        fitToScreen && viewer.fitToScreen();
-
-        console.log(`added pointcloud ${pointcloudTitle}`);
-      });
+      loadLasFile();
     }
   }, [
     fitToScreen,

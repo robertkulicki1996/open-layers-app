@@ -1,3 +1,11 @@
+export enum LayerZIndex {
+  BASE = 0,
+  FIRST = 1,
+  SECOND = 2,
+  THIRD = 3,
+  FOURTH = 4
+}
+
 export enum Projection {
   EPSG_2176 = "EPSG:2176",
   EPSG_3857 = "EPSG:3857",

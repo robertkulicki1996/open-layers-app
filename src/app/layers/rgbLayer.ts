@@ -1,22 +1,17 @@
 import { XYZ } from "ol/source";
-import { Projection, RasterMetadata } from "../types";
+import { LayerZIndex, Projection, RasterMetadata } from "../types";
 import TileLayer from "ol/layer/Tile";
 import TileGrid from "ol/tilegrid/TileGrid";
+import { createLayerOptions } from "./layerOptions";
 
 /**
- * Creates an RGB layer based on raster metadata in EPSG:2176 projection.
- * 
- * This function creates a new RGB tile layer using the provided raster metadata.
- * It sets up the extent, tile grid, and source for the layer based on the given metadata,
- * and uses an XYZ source to load the raster tiles in the EPSG:2176 projection.
- * 
- * @param {string} title - The title of the RGB layer.
- * @param {RasterMetadata} metadata - The raster metadata containing extent, resolutions, and tile size.
- * @returns {TileLayer} - The created RGB tile layer.
- * 
+ * Creates an RGB layer.
+ * @param {string} title The title of the layer.
+ * @param {Object} metadata Raster metadata (including extent, resolutions, tile size).
+ * @returns {TileLayer} The created RGB tile layer.
+ *
  * @example
- * // Create an RGB layer with the title "RGB Layer" and provided raster metadata
- * const rgbLayer = createRgbLayer("RGB Layer", rasterMetadata);
+ * const rgbLayer = createRgbLayer("RGB Map", rasterMetadata, LayerZIndex.OVERLAY, 0.7);
  */
 export function createRgbLayer(
   title: string,
@@ -54,10 +49,8 @@ export function createRgbLayer(
   });
 
   return new TileLayer({
-    visible: true,
-    properties: { title },
     extent,
     source,
-    zIndex: 1
+    ...createLayerOptions(title, LayerZIndex.FIRST)
   });
 }
