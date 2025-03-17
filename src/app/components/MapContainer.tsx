@@ -54,7 +54,6 @@ const MapContainer = ({ data }: MapContainerProps): JSX.Element => {
     const geoJsonVectorLayerFromResponse = createGeoJsonVectorLayerFromResponse(
       "Mapa wektorowa - z pliku .json"
     );
-
     const olMap = new Map({
       target: mapRef.current,
       layers: [
@@ -79,7 +78,11 @@ const MapContainer = ({ data }: MapContainerProps): JSX.Element => {
       geoJsonVectorLayerFromResponse,
     ]);
 
-    return () => olMap.setTarget(undefined);
+    return () => {
+      olMap.setTarget(undefined);
+      setMap(null);
+      setLayers([]);
+    }
   }, [data]);
 
   useFitToExtent(map, layers);

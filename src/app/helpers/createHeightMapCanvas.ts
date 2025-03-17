@@ -1,4 +1,5 @@
 import { ImageLike } from "ol/DataTile";
+import * as Lerc from "lerc";
 
 /**
  * Creates a height map canvas with color-coded height values.
@@ -20,7 +21,7 @@ import { ImageLike } from "ol/DataTile";
  * document.body.appendChild(heightMapCanvas);  // Add the canvas to the DOM.
  */
 export const createHeightMapCanvas = (
-  pixels: any,
+  pixels: Lerc.PixelTypedArray[],
   width: number,
   height: number,
   minVal: number,
@@ -41,26 +42,29 @@ export const createHeightMapCanvas = (
   const data = imageData.data;
 
   const scale = maxVal - minVal;
-  const radius = 2;
+  const radius = 2; 
 
   if (pixels[0] instanceof Float64Array) {
     for (let i = 0; i < height; i++) {
       for (let j = 0; j < width; j++) {
         if (!mask || mask[i * width + j]) {
-          let sum = 0;
-          let count = 0;
+          // Pobieranie wartości wysokości bezpośrednio z tablicy pixels
+          const blurredHeight = pixels[0][i * width + j];
+          // let sum = 0;
+          // let count = 0;
 
-          for (let di = -radius; di <= radius; di++) {
-            for (let dj = -radius; dj <= radius; dj++) {
-              const ni = i + di;
-              const nj = j + dj;
-              if (ni >= 0 && ni < height && nj >= 0 && nj < width) {
-                sum += pixels[0][ni * width + nj];
-                count++;
-              }
-            }
-          }
-          const blurredHeight = sum / count;
+          // // Obliczanie rozmytej wartości wysokości
+          // for (let di = -radius; di <= radius; di++) {
+          //   for (let dj = -radius; dj <= radius; dj++) {
+          //     const ni = i + di;
+          //     const nj = j + dj;
+          //     if (ni >= 0 && ni < height && nj >= 0 && nj < width) {
+          //       sum += pixels[0][ni * width + nj];
+          //       count++;
+          //     }
+          //   }
+          // }
+          // const blurredHeight = sum / count;
 
           let normalizedHeight = (blurredHeight - minVal) / scale;
           normalizedHeight = Math.max(0, Math.min(1, normalizedHeight));

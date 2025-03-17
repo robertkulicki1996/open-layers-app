@@ -6,17 +6,14 @@ import ImageTileSource from "ol/source/ImageTile";
 import * as Lerc from "lerc";
 import { loadWasm } from "../helpers/loadWasmFile";
 import { createLayerOptions } from "./layerOptions";
-
+import { getExtent } from "../helpers/getExtent";
 
 export function createHeightMapLayer(
   title: string,
   metadata: RasterMetadata
 ): TileLayer {
-  const { minX, minY, maxX, maxY, resolutions, tileSize, minVal, maxVal } =
-    metadata;
-  const extent = [minX, minY, maxX, maxY];
-
-  loadWasm();
+  const { resolutions, tileSize, minVal, maxVal } = metadata;
+  const extent = getExtent(metadata);
 
   const source = new ImageTileSource({
     tileGrid: new TileGrid({
@@ -27,7 +24,7 @@ export function createHeightMapLayer(
     loader: async (z: number, x: number, y: number, _options): Promise<any> => {
       if (!minVal || !maxVal) return;
 
-      await Lerc.load();
+      await loadWasm();
       const response = await fetch(
         `http://localhost:5173/data/6/rasters/499/499/${z}/${x}/${y}.lerc`
       );

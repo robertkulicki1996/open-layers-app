@@ -43,7 +43,7 @@ const useBasicViewerConfig = ({
       viewer.setPointBudget(1_000_000);
       viewer.loadSettingsFromURL();
       viewer.setBackground("gradient");
-      viewer.setDescription("potree component");
+      viewer.setDescription("Chmura punktów 3D");
 
       const controls = new Potree.EarthControls(viewer);
       viewer.setControls(controls);
